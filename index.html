@@ -675,7 +675,7 @@ async function loadFromFirebase(){
     }
   } catch(e){ console.warn("Firebase load error",e.message); }
 }
-const API_URL = "https://corsproxy.io/?url=https://api.anthropic.com/v1/messages";
+const API_URL = "/.netlify/functions/claude";
 
 function load(){
   try{
@@ -835,7 +835,7 @@ async function procTxt(txt){
   chatHistory.push({role:"user",content:txt});
   let reply="Erro de conexão. Tente novamente.";
   try{
-    const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+    const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json",},
       body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
         system:SYS.replace("{{STATE}}",getState()),messages:chatHistory})});
     const d=await r.json();
@@ -856,7 +856,7 @@ async function procImg(imgData,cap){
   // Step 1: Vision extraction with retry
   for(let attempt=0; attempt<2; attempt++){
     try{
-      const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json",},
         body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:800,
           messages:[{role:"user",content:[{type:"image",source:{type:"base64",media_type:imgData.mt,data:imgData.b64}},{type:"text",text:IMG_P}]}]})});
       if(!r.ok) throw new Error("HTTP "+r.status);
@@ -881,7 +881,7 @@ async function procImg(imgData,cap){
   let reply="";
   for(let attempt=0; attempt<2; attempt++){
     try{
-      const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json","x-api-key":API_KEY,"anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true"},
+      const r=await fetch(API_URL,{method:"POST",headers:{"Content-Type":"application/json",},
         body:JSON.stringify({model:"claude-sonnet-4-20250514",max_tokens:1000,
           system:SYS.replace("{{STATE}}",getState()),messages:chatHistory})});
       if(!r.ok) throw new Error("HTTP "+r.status);
